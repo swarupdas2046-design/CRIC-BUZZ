@@ -5,11 +5,11 @@ import morgan from 'morgan'
 let CreateApp = () => {
     let app = express()
     
-    if (env.Node_ENV === 'development') {
+    if (env.NODE_ENV === 'development') {
         app.use(morgan('dev'))
         
     }
-
+    
     return app
 }
 
