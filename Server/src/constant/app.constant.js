@@ -1,3 +1,9 @@
+export const ROLES = {
+    ADMIN: 'admin',
+    SCORER: 'scorer',
+    VIEWER: 'viewer',
+}
+
 export default {
     PORT:3000,
     MONGO_URL:"mongodb://localhost:27017/test",
