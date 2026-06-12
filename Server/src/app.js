@@ -9,7 +9,6 @@ let CreateApp = () => {
         app.use(morgan('dev'))
         
     }
-    app.use(express.json())
 
     return app
 }
