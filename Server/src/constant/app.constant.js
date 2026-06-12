@@ -1,8 +1,4 @@
-export const ROLES = {
-    ADMIN: 'admin',
-    SCORER: 'scorer',
-    VIEWER: 'viewer',
-}
+
 
 export default {
     PORT:3000,
