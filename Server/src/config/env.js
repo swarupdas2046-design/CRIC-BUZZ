@@ -11,6 +11,9 @@ const envSchema = z.object({
     CORS_ORIGIN: z.string().default(appConstant.CORS_ORIGIN),
     RATELIMIT_WINDOWAS: z.coerce.number().default(appConstant.RATELIMIT_WINDOWAS),
     RATELIMIT: z.coerce.number().default(appConstant.RATELIMIT),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
+    GOOGLE_CALLBACK_URL: z.string(),
 })  
     
 const parsedEnv = envSchema.safeParse(process.env)
