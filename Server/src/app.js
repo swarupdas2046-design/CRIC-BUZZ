@@ -4,6 +4,8 @@ import morgan from 'morgan'
 import securityMiddleware from './middleware/security.middleware.js'
 import googleAuthMiddleware from './middleware/googleOAuth.middleware.js'
 import authRouter from "./modules/public/auth/auth.route.js"
+import ErrorHandler from './middleware/errorHandler.middleware.js'
+import NotFound from './middleware/notFound.middleware.js'
 
 let CreateApp = () => {
     let app = express()
@@ -17,6 +19,8 @@ let CreateApp = () => {
     googleAuthMiddleware(app)
 
     app.use("/api/auth", authRouter);
+    app.use(NotFound)
+    app.use(ErrorHandler)
     
     return app
 }
