@@ -6,6 +6,10 @@ export const authMiddleware = (req, res, next) => {
   try {
     const token = req.cookies.accessToken;
 
+    if (!token) {
+      throw new UnauthorizedError("Access token not found");
+    }
+
     const payload = jwt.verify(token, env.ACCESS_TOKEN_SECRET);
 
     req.user= payload;
@@ -20,3 +24,16 @@ export const authMiddleware = (req, res, next) => {
   }
 }
 
+
+
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError("Forbidden", 403)
+      );
+    }
+
+    next();
+  };
+};
