@@ -1,7 +1,6 @@
 import SeriesRepository from "./series.repository.js";
 import MatchRepository from "../match/match.repository.js";
-import NotFound from "../../shared/error/notFound.error.js";
-import ConflictError from "../../shared/error/conflict.error.js";
+import { NotFound, ConflictError } from "../../shared/error/app.error.js";
 
 export default class SeriesService {
   constructor() {

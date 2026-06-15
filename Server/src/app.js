@@ -7,7 +7,7 @@ import authRouter from "./modules/public/auth/auth.route.js"
 import ErrorHandler from './middleware/errorHandler.middleware.js'
 import NotFound from './middleware/notFound.middleware.js'
 import usersRouter from "./modules/users/user.route.js"
-
+import seriesRouter from './modules/series/series.route.js'
 let CreateApp = () => {
     let app = express()
     
@@ -21,6 +21,7 @@ let CreateApp = () => {
 
     app.use("/api/auth", authRouter);
     app.use("/api/users", usersRouter);
+    app.use("/api/series", seriesRouter);
 
     app.use(NotFound)
     app.use(ErrorHandler)
