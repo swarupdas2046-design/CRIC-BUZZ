@@ -12,6 +12,9 @@ import matchRouter from "./modules/match/match.route.js";
 import publicApiRouter from "./modules/public/index.js";
 import teamRouter from './modules/team/team.route.js';
 import playerRouter from './modules/player/player.route.js'
+import scoreRouter from "./modules/score/score.route.js"
+
+
 let CreateApp = () => {
     let app = express()
     
@@ -30,6 +33,7 @@ let CreateApp = () => {
     app.use("/api/teams", teamRouter);
     app.use("/api/public", publicApiRouter);
     app.use("/api/players", playerRouter);
+    app.use("/api/scores", scoreRouter);
     app.use(NotFound)
     app.use(ErrorHandler)
     
