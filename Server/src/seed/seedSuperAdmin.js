@@ -1,27 +1,39 @@
-import bcrypt from "bcrypt";
-import logger from "../config/logger.js";
-import UserRepo from "../repository/user.repository.js";
+// mongodb query 
+import userModel from "../model/user.model.js";
 
-const userRepo = new UserRepo();
-
-const seedSuperAdmin = async () => {
-  const existing = await userRepo.findSuperAdmin();
-
-  if (existing) { 
-    logger.info("SUPER_ADMIN already exists");
-    return;
+export default class UserRepo {
+  async create(payload) {
+      return await userModel.create(payload)
   }
 
-  const password = await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD, 10 );
+  async findByEmail(email) {
+    return await userModel.findOne({ email, isDeleted: false }).lean();
+  }
+    
+  async findSuperAdmin() {
+    return userModel.findOne({ role: "SUPER_ADMIN" });
+  }
 
-  await userRepo.create({
-    name: process.env.SUPER_ADMIN_NAME || "Super Admin",
-    email: process.env.SUPER_ADMIN_EMAIL,
-    password,
-    role: "SUPER_ADMIN",
-  });
+  async findAll() {
+    return await userModel.find({ isDeleted: false }).select("-password").lean();
+  }
 
-  logger.info("SUPER_ADMIN created successfully");
-};
+  async findById(id) {
+    return await userModel.findOne({ _id: id, isDeleted: false }).select("-password").lean();
+  }
 
-export default seedSuperAdmin;
+  async updateById(id, payload) {
+    return await userModel.findByIdAndUpdate(
+      id, payload,
+      { new: true }
+    ).select("-password");
+  }
+
+  async softDelete(id) {
+    return await userModel.findByIdAndUpdate(
+      id,
+      { isDeleted: true },
+      { new: true }
+    );
+  }
+}
