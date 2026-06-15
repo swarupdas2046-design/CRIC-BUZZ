@@ -9,10 +9,11 @@ import Login from "./pages/public/Login";
 import Register from "./pages/public/Register";
 
 import AdminHome from "./pages/private/AdminHome";
-
+import Tournaments from "./pages/private/Tournaments";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
-
+import Teams from "./pages/private/Teams";
+import Players from "./pages/private/Players";
 let router = createBrowserRouter([
   {
     path: "/",
@@ -39,15 +40,15 @@ let router = createBrowserRouter([
 
       {
         path: "tournaments",
-        element: <div>Tournaments</div>,
+        element: <Tournaments />,
       },
       {
         path: "teams",
-        element: <div>Teams</div>,
+        element: <Teams />,
       },
       {
         path: "players",
-        element: <div>Players</div>,
+        element: <Players />,
       },
     ],
   },
@@ -62,6 +63,18 @@ let router = createBrowserRouter([
           {
             index: true,
             element: <AdminHome />,
+          },
+          {
+            path: "tournaments",
+            element: <Tournaments />,
+          },
+          {
+            path: "teams",
+            element: <Teams />,
+          },
+          {
+            path: "players",
+            element: <Players />,
           },
         ],
       },
