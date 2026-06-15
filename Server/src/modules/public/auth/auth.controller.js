@@ -25,5 +25,13 @@ export default class AuthController {
     return buildSuccessResponse( res, "User Created successfully", 201, result.user);
   }
 
+  async login(req, res) {
+    const result = await this.authService.login(req.body);
+
+    setAuthCookies(res, result.accessToken, result.refreshToken);
+
+    return buildSuccessResponse(res, "Login Successful", 200, result.user);
+  }
+
 
 }

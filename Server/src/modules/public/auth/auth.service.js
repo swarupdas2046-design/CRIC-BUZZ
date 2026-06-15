@@ -2,7 +2,7 @@ import { email } from "zod";
 import UserRepo from "../../../repository/user.repository.js"
 import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "../../../shared/utils/token.js";
-import { ConflictError } from "../../../shared/error/app.error.js";
+import { ConflictError, UnAuthorize } from "../../../shared/error/app.error.js";
 
 export default class AuthService {
 
@@ -45,6 +45,17 @@ export default class AuthService {
     const hashedPassword = await bcrypt.hash( data.password, 10);
 
     const user = await this.userRepo.create({ ...data, password: hashedPassword});
+
+    return this.generateTokens(user);
+  }
+
+  async login(data) {
+    const user = await this.userRepo.findByEmail( data.email );
+    if (!user) throw new ( "User not found");
+    
+    const isMatch = await bcrypt.compare( data.password, user.password );
+    if (!isMatch) throw new UnAuthorize( "Invalid credentials");
+    
 
     return this.generateTokens(user);
   }
