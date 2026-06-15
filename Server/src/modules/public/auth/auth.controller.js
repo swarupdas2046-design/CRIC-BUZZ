@@ -33,5 +33,12 @@ export default class AuthController {
     return buildSuccessResponse(res, "Login Successful", 200, result.user);
   }
 
+  async logout(req, res) {
+
+    clearAuthCookies(res);
+
+    return buildSuccessResponse( res,"Logout Successful", 200 );
+  }
+
 
 }
