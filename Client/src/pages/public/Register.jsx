@@ -1,207 +1,203 @@
-import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { useState } from "react";
+import { NavLink } from "react-router";
+import { User, Mail, Lock, ArrowRight, Gauge, ShieldCheck } from "lucide-react";
+
+import { useRegister } from "../../hooks/useAuth";
 
 const Register = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    agree: false,
+  });
+  const [validationError, setValidationError] = useState("");
+  const register = useRegister();
 
-  const password = watch("password");
-
-  const onSubmit = (data) => {
-    console.log(data);
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setValidationError("");
+
+    if (form.password !== form.confirmPassword) {
+      setValidationError("Passwords do not match.");
+      return;
+    }
+    if (!form.agree) {
+      setValidationError("Please accept the Terms of Service to continue.");
+      return;
+    }
+
+    // Backend register body: { name, email, password }. Role defaults to SCORER server-side.
+    register.mutate({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+    });
+  };
+
+  const errorMessage =
+    validationError ||
+    register.error?.response?.data?.message ||
+    (register.isError ? "Registration failed. Please try again." : "");
+
   return (
-    <div className="min-h-[calc(100vh-80px)] flex">
-      {/* Left Side */}
-      <div className="hidden lg:flex w-[45%] relative">
-        <img
-          src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e"
-          alt="Cricket"
-          className="w-full h-full object-cover"
-        />
-
-        <div className="absolute inset-0 bg-black/60"></div>
-
-        <div className="absolute bottom-12 left-10 text-white max-w-sm">
-          <h1 className="text-5xl font-bold mb-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10">
+      <div className="grid w-full max-w-4xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm md:grid-cols-2">
+        {/* Left brand panel. Drop a stadium image in via the background style below. */}
+        <div
+          className="relative hidden flex-col justify-end bg-slate-900 p-8 text-white md:flex"
+          style={{
+            backgroundImage:
+              "linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.55))",
+          }}
+        >
+          <h2 className="text-3xl font-bold">
             CricBuzz <span className="text-blue-500">Pro</span>
-          </h1>
-
-          <p className="text-lg text-gray-200">
-            The high-performance management suite for professional cricket.
-            Access real-time analytics, comprehensive player tracking,
-            and precision match control.
-          </p>
-        </div>
-      </div>
-
-      {/* Right Side */}
-      <div className="w-full lg:w-[55%] flex items-center justify-center bg-gray-100 px-6 py-8">
-        <div className="w-full max-w-md bg-white rounded-xl border shadow-sm p-6">
-          <h2 className="text-3xl font-bold mb-2">
-            Create Account
           </h2>
+          <p className="mt-3 text-sm text-gray-300">
+            The high-performance management suite for professional cricket.
+            Access real-time analytics, comprehensive player tracking, and
+            precision match control.
+          </p>
+          <div className="mt-6 flex gap-3">
+            <div className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-2">
+              <Gauge size={18} className="text-blue-400" />
+              <div className="text-xs">
+                <p className="font-semibold">12ms</p>
+                <p className="text-gray-400">DATA LATENCY</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-2">
+              <ShieldCheck size={18} className="text-green-400" />
+              <div className="text-xs">
+                <p className="font-semibold">Tier 1</p>
+                <p className="text-gray-400">SECURITY LEVEL</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <p className="text-gray-600 mb-6">
-            Join the professional network.
-            <Link
-              to="/login"
-              className="text-blue-600 ml-1 font-medium"
-            >
+        {/* Right form */}
+        <form onSubmit={handleSubmit} className="p-8">
+          <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Join the professional network. Already have an account?{" "}
+            <NavLink to="/login" className="font-medium text-blue-600">
               Login here
-            </Link>
+            </NavLink>
           </p>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Name */}
-            <div className="mb-4">
-              <label className="block mb-2 font-medium">
-                Full Name
-              </label>
+          {/* Full Name */}
+          <label className="mt-6 mb-1.5 block text-sm font-medium text-gray-700">
+            Full Name
+          </label>
+          <div className="relative mb-4">
+            <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              placeholder="Jane Doe"
+              className="w-full rounded-md border border-gray-300 py-2.5 pl-9 pr-3 text-sm"
+            />
+          </div>
 
-              <input
-                type="text"
-                placeholder="Jane Doe"
-                className="w-full border rounded-md px-3 py-2.5"
-                {...register("name", {
-                  required: "Full name is required",
-                })}
-              />
+          {/* Email */}
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Corporate Email
+          </label>
+          <div className="relative mb-4">
+            <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              placeholder="jane.doe@team.com"
+              className="w-full rounded-md border border-gray-300 py-2.5 pl-9 pr-3 text-sm"
+            />
+          </div>
 
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
+          {/* Password */}
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <div className="relative mb-1">
+            <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              minLength={8}
+              placeholder="••••••••"
+              className="w-full rounded-md border border-gray-300 py-2.5 pl-9 pr-3 text-sm"
+            />
+          </div>
+          <p className="mb-4 text-xs text-gray-400">
+            Must be at least 8 characters with a number and symbol.
+          </p>
 
-            {/* Email */}
-            <div className="mb-4">
-              <label className="block mb-2 font-medium">
-                Corporate Email
-              </label>
+          {/* Confirm Password */}
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Confirm Password
+          </label>
+          <div className="relative mb-4">
+            <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="password"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              required
+              placeholder="••••••••"
+              className="w-full rounded-md border border-gray-300 py-2.5 pl-9 pr-3 text-sm"
+            />
+          </div>
 
-              <input
-                type="email"
-                placeholder="jane@team.com"
-                className="w-full border rounded-md px-3 py-2.5"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^\S+@\S+\.\S+$/,
-                    message: "Enter a valid email",
-                  },
-                })}
-              />
+          {/* Terms */}
+          <label className="mb-4 flex items-start gap-2 text-sm text-gray-600">
+            <input
+              type="checkbox"
+              name="agree"
+              checked={form.agree}
+              onChange={handleChange}
+              className="mt-0.5 rounded border-gray-300"
+            />
+            <span>
+              I agree to the{" "}
+              <span className="text-blue-600">Terms of Service</span> and{" "}
+              <span className="text-blue-600">Privacy Policy</span>.
+            </span>
+          </label>
 
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
+          {errorMessage && (
+            <p className="mb-4 text-sm text-red-600">{errorMessage}</p>
+          )}
 
-            {/* Password */}
-            <div className="mb-4">
-              <label className="block mb-2 font-medium">
-                Password
-              </label>
+          <button
+            type="submit"
+            disabled={register.isPending}
+            className="flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+          >
+            {register.isPending ? "Creating account..." : "Create Account"}
+            {!register.isPending && <ArrowRight size={16} />}
+          </button>
 
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="w-full border rounded-md px-3 py-2.5"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 8,
-                    message:
-                      "Password must be at least 8 characters",
-                  },
-                })}
-              />
-
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password.message}
-                </p>
-              )}
-
-              <p className="text-xs text-gray-500 mt-1">
-                Must be at least 8 characters.
-              </p>
-            </div>
-
-            {/* Confirm Password */}
-            <div className="mb-4">
-              <label className="block mb-2 font-medium">
-                Confirm Password
-              </label>
-
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="w-full border rounded-md px-3 py-2.5"
-                {...register("confirmPassword", {
-                  required: "Confirm password is required",
-                  validate: (value) =>
-                    value === password ||
-                    "Passwords do not match",
-                })}
-              />
-
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
-            </div>
-
-            {/* Terms */}
-            <div className="mb-5">
-              <label className="flex items-start gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  className="mt-1"
-                  {...register("terms", {
-                    required:
-                      "You must accept the Terms & Conditions",
-                  })}
-                />
-
-                <span>
-                  I agree to the{" "}
-                  <span className="text-blue-600 cursor-pointer">
-                    Terms of Service
-                  </span>{" "}
-                  and{" "}
-                  <span className="text-blue-600 cursor-pointer">
-                    Privacy Policy
-                  </span>
-                </span>
-              </label>
-
-              {errors.terms && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.terms.message}
-                </p>
-              )}
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2.5 rounded-md hover:bg-blue-700 transition"
-            >
-              Create Account
-            </button>
-          </form>
-        </div>
+          <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-gray-400">
+            <ShieldCheck size={14} />
+            SECURE SSL ENCRYPTION
+          </p>
+        </form>
       </div>
     </div>
   );
