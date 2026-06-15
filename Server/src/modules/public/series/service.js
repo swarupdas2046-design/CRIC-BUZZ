@@ -1,5 +1,5 @@
 import PublicSeriesRepository from "./repository.js";
-import AppError from "../../../shared/error/app.error.js";
+import { NotFound } from "../../../shared/error/app.error.js";
 import { ensureId } from "../shared/query.js";
 
 export default class PublicSeriesService {
@@ -15,7 +15,7 @@ export default class PublicSeriesService {
     ensureId(id);
     const series = await this.repository.findById(id);
     if (!series) {
-      throw new AppError("Series not found", 404);
+      throw new NotFound("Series not found", 404);
     }
     return series;
   }
@@ -24,7 +24,7 @@ export default class PublicSeriesService {
     ensureId(id);
     const series = await this.repository.findById(id);
     if (!series) {
-      throw new AppError("Series not found", 404);
+      throw new NotFound("Series not found", 404);
     }
 
     const matches = await this.repository.findMatchesBySeries(id);
@@ -37,7 +37,7 @@ export default class PublicSeriesService {
     ensureId(id);
     const series = await this.repository.findById(id);
     if (!series) {
-      throw new AppError("Series not found", 404);
+      throw new NotFound("Series not found", 404);
     }
     return await this.repository.findMatchesBySeries(id);
   }
