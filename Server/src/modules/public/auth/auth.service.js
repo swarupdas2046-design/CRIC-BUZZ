@@ -1,6 +1,7 @@
 import { email } from "zod";
 import UserRepo from "../../../repository/user.repository.js"
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt"
 import { generateAccessToken, generateRefreshToken } from "../../../shared/utils/token.js";
 import { ConflictError, UnAuthorize } from "../../../shared/error/app.error.js";
 
