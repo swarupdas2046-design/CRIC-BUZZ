@@ -1,39 +1,27 @@
-// mongodb query 
-import userModel from "../model/user.model.js";
+import bcrypt from "bcrypt";
+import logger from "../config/logger.js";
+import UserRepo from "../repository/user.repository.js";
 
-export default class UserRepo {
-  async create(payload) {
-      return await userModel.create(payload)
-  }
+const userRepo = new UserRepo();
 
-  async findByEmail(email) {
-    return await userModel.findOne({ email, isDeleted: false }).lean();
-  }
-    
-  async findSuperAdmin() {
-    return userModel.findOne({ role: "SUPER_ADMIN" });
+const seedSuperAdmin = async () => {
+  const existing = await userRepo.findSuperAdmin();
+
+  if (existing) { 
+    logger.info("SUPER_ADMIN already exists");
+    return;
   }
 
-  async findAll() {
-    return await userModel.find({ isDeleted: false }).select("-password").lean();
-  }
+  const password = await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD, 10 );
 
-  async findById(id) {
-    return await userModel.findOne({ _id: id, isDeleted: false }).select("-password").lean();
-  }
+  await userRepo.create({
+    name: process.env.SUPER_ADMIN_NAME || "Super Admin",
+    email: process.env.SUPER_ADMIN_EMAIL,
+    password,
+    role: "SUPER_ADMIN",
+  });
 
-  async updateById(id, payload) {
-    return await userModel.findByIdAndUpdate(
-      id, payload,
-      { new: true }
-    ).select("-password");
-  }
+  logger.info("SUPER_ADMIN created successfully");
+};
 
-  async softDelete(id) {
-    return await userModel.findByIdAndUpdate(
-      id,
-      { isDeleted: true },
-      { new: true }
-    );
-  }
-}
+export default seedSuperAdmin;
