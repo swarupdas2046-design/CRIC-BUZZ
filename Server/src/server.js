@@ -1,23 +1,24 @@
-import CreateApp from "./app.js";
-import env from './config/env.js'
-import logger from './config/logger.js'
+import createApp from "./app.js";
+import env from "./config/env.js";
+import logger from "./config/logger.js";
 import connectDB from "./database/mongodb.js";
+import seedSuperAdmin from "./seed/seedSuperAdmin.js";
 
+const app = createApp();
 
-const app =   CreateApp()
-
-function StartServer(){
-
-connectDB().then(() => {
+async function startServer() {
+  try {
+    await connectDB();
+    // Create SUPER_ADMIN if not exists
+    await seedSuperAdmin();
 
     app.listen(env.PORT, () => {
-        logger.info({port: env.PORT},"Server is running suuccessfully")
-    })
-
-}).catch((error) => {
-    logger.error({error:error},"Error while running server")
-})
-
+      logger.info({ port: env.PORT }, "server running");
+    });
+  }catch (err) {
+    logger.error({ message: err.message, stack: err.stack,},"error while running server"
+  );
+}
 }
 
-StartServer()
+startServer();

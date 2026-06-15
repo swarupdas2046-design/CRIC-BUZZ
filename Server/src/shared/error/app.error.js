@@ -17,14 +17,14 @@ export class BadRequestError extends AppError {
 }
 
 // 401 Unauthorized
-export class UnauthorizedError extends AppError {
+export class UnAuthorize extends AppError {
   constructor(message = "Unauthorized", details = "") {
     super(message, StatusCodes.UNAUTHORIZED, details);
   }
 }
 
 // 404 Not Found
-export class NotFoundError extends AppError {
+export class NotFound extends AppError {
   constructor(message = "Resource Not Found", details = "") {
     super(message, StatusCodes.NOT_FOUND, details);
   }

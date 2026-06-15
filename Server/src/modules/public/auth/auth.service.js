@@ -1,8 +1,9 @@
 import { email } from "zod";
 import UserRepo from "../../../repository/user.repository.js"
 import jwt from "jsonwebtoken";
-import env from "../../../config/env.js"
-import { app_config } from "../../../constant/app.constant.js";
+import bcrypt from "bcrypt"
+import { generateAccessToken, generateRefreshToken } from "../../../shared/utils/token.js";
+import { ConflictError, UnAuthorize } from "../../../shared/error/app.error.js";
 
 export default class AuthService {
 
@@ -30,13 +31,53 @@ export default class AuthService {
       role: result.role,
       name: user.displayName 
     }
-
-    const refreshToken = jwt.sign(data, env.REFRESH_TOKEN_SECRET, app_config.jwt.refreshToken);
-
-    const accessToken = jwt.sign(data, env.ACCESS_TOKEN_SECRET, app_config.jwt.accessToken);
-
+    const accessToken = generateAccessToken(data);
+    const refreshToken = generateRefreshToken(data);
 
     return { accessToken, refreshToken };
 
   }
+
+  async register(data) {
+    const existingUser = await this.userRepo.findByEmail(data.email);
+
+    if (existingUser) throw new ConflictError("Email already registered");
+
+    const hashedPassword = await bcrypt.hash( data.password, 10);
+
+    const user = await this.userRepo.create({ ...data, password: hashedPassword});
+
+    return this.generateTokens(user);
+  }
+
+  async login(data) {
+    const user = await this.userRepo.findByEmail( data.email );
+    if (!user) throw new ( "User not found");
+    
+    const isMatch = await bcrypt.compare( data.password, user.password );
+    if (!isMatch) throw new UnAuthorize( "Invalid credentials");
+    
+
+    return this.generateTokens(user);
+  }
+
+  generateTokens(user) {
+    const data = {
+      _id: user._id,
+      email: user.email,
+      picture: user.picture,
+      role: user.role,
+      name: user.name
+    }
+
+    const accessToken = generateAccessToken(data);
+    const refreshToken = generateRefreshToken(data);
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+    };
+  }
+
 }
