@@ -1,8 +1,8 @@
 import MatchModel from "../match/match.model.js";
 import ScoreRepository from "./score.repository.js";
-import { BadRequestError, NotFound } from "../../shared/error/app.error.js";
+import { AppError, BadRequestError, NotFound } from "../../shared/error/app.error.js";
 import { isValidObjectId } from "mongoose";
-import { getSocket } from "../../shared/utils/socket.js";
+// import { getSocket } from "../../shared/utils/socket.js";
 
 const LIVE_STATUS = "LIVE";
 
