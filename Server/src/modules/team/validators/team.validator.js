@@ -6,7 +6,9 @@ const createSchema = z.object({
   shortName: z.string().min(1),
   logo: z.string().min(1),
   primaryColor: z.string().optional(),
+  squadPlayers: z.array(z.string()).optional(),
 });
+
 
 const updateSchema = z.object({
   name: z.string().min(1).optional(),
