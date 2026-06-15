@@ -9,6 +9,7 @@ import NotFound from './middleware/notFound.middleware.js'
 import usersRouter from "./modules/users/user.route.js"
 import seriesRouter from './modules/series/series.route.js'
 import matchRouter from "./modules/match/match.route.js";
+import publicApiRouter from "./modules/public/index.js";
 
 
 let CreateApp = () => {
@@ -26,6 +27,8 @@ let CreateApp = () => {
     app.use("/api/users", usersRouter);
     app.use("/api/series", seriesRouter);
     app.use("/api/matches", matchRouter);
+
+    app.use("/api/public", publicApiRouter);
 
     app.use(NotFound)
     app.use(ErrorHandler)
