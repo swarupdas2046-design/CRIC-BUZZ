@@ -1,12 +1,15 @@
 import z from "zod";
 import { validateObjectId } from "../../users/validators/objectId.validator.js";
 
+
 const createSchema = z.object({
   name: z.string().min(1),
   shortName: z.string().min(1),
   logo: z.string().min(1),
   primaryColor: z.string().optional(),
+  squadPlayers: z.array(z.string()).optional(),
 });
+
 
 const updateSchema = z.object({
   name: z.string().min(1).optional(),
