@@ -30,9 +30,9 @@ export const authenticate = authMiddleware;
 export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return next(
-        new UnAuthorize("Invalid role")
-      );
+      return next();
+    }else{
+    throw new UnAuthorize("Invalid role")
     }
 
     next();
