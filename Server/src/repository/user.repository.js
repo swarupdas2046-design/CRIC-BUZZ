@@ -10,4 +10,8 @@ export default class UserRepo {
   async findById (id) {
     return await userModel.findById(id).lean();
   }
+
+  async findSuperAdmin() {
+    return userModel.findOne({ role: "SUPER_ADMIN" });
+  }
 }
