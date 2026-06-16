@@ -5,7 +5,9 @@ const AppLayout = () => {
   return (
     <div>
       <Navbar />
-      <Outlet />
+      <div className="mx-auto h-16 max-w-7xl py-10 px-6">
+        <Outlet />
+      </div>
     </div>
   )
 }

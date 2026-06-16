@@ -1,25 +1,33 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { getSession } from '../services/authService'
+
+// Hydrate Redux from the persisted session so a page refresh stays logged in.
+const session = getSession()
+
+const initialState = {
+  user: session?.user ?? null,
+  token: session?.token ?? null,
+  isAuthenticated: Boolean(session?.token),
+}
 
 export const userSlice = createSlice({
   name: 'user',
-  initialState:  {
-      _id: "",
-      email: "",
-      picture: "",
-      role: "",
-      name: "" 
-    },
+  initialState,
   reducers: {
-    setUser: (state, action) => {
-      state._id = action.payload._id;
-      state.email = action.payload.email;
-      state.picture = action.payload.picture;
-      state.role = action.payload.role;
-      state.name = action.payload.name;
+    setCredentials: (state, action) => {
+      const { user, token } = action.payload
+      state.user = user
+      state.token = token
+      state.isAuthenticated = true
+    },
+    logout: (state) => {
+      state.user = null
+      state.token = null
+      state.isAuthenticated = false
     },
   },
 })
 
-export const { setUser } = userSlice.actions
+export const { setCredentials, logout } = userSlice.actions
 
 export default userSlice.reducer
