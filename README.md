@@ -1285,10 +1285,6 @@ Client/src/components/Component.test.jsx
 
 ---
 
-## 📄 License
-
-This project is licensed under the ISC License - see LICENSE file for details.
-
 ---
 
 ## 📞 Support
