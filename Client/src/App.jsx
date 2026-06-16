@@ -14,6 +14,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import Teams from "./pages/private/Teams";
 import Players from "./pages/private/Players";
+import Matches from "./pages/private/Matches";
+import LiveScoring from "./pages/private/LiveScoring";
+import Users from "./pages/private/Users";
+
+
 let router = createBrowserRouter([
   {
     path: "/",
@@ -75,6 +80,18 @@ let router = createBrowserRouter([
           {
             path: "players",
             element: <Players />,
+          },
+          {
+            path: "matches",
+            element: <Matches />,
+          },
+          {
+            path: "live-scoring",
+            element: <LiveScoring />,
+          },
+          {
+            path: "users",
+            element: <Users />,
           },
         ],
       },
