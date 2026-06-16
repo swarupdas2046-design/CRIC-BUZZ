@@ -1,6 +1,7 @@
 import z from "zod";
 import { validateObjectId } from "../../users/validators/objectId.validator.js";
 
+
 const createSchema = z.object({
   name: z.string().min(1),
   shortName: z.string().min(1),
